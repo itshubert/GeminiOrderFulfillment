@@ -21,6 +21,9 @@ public sealed class FulfillmentConfiguration : IEntityTypeConfiguration<Fullfill
         builder.Property(f => f.OrderId)
             .IsRequired();
 
+        builder.HasIndex(f => f.OrderId)
+            .IsUnique();
+
         builder.Property(f => f.Status)
             .IsRequired()
             .HasConversion<string>()

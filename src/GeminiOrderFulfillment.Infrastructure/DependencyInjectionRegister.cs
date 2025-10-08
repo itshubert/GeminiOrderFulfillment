@@ -13,6 +13,10 @@ using GeminiOrderFulfillment.Infrastructure.Messaging;
 using GeminiOrderFulfillment.Infrastructure.Interceptors;
 using GeminiOrderFulfillment.Infrastructure.Messaging.Models;
 using GeminiOrderFulfillment.Application.Common.Messaging;
+using GeminiOrderFulfillment.Infrastructure.Messaging.Events;
+using GeminiOrderFulfillment.Infrastructure.Messaging.EventProcessors;
+using GeminiOrderFulfillment.Application.Common.Interfaces;
+using GeminiOrderFulfillment.Infrastructure.Persistence.Repositories;
 
 namespace GeminiOrderFulfillment.Infrastructure;
 
@@ -22,7 +26,7 @@ public static class DependencyInjectionRegister
     {
         services.AddDbContext<GeminiOrderFulfillmentDbContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("GeminiOrderDbContext");
+            var connectionString = configuration.GetConnectionString("GeminiOrderFulfillmentDbContext");
             options.UseNpgsql(connectionString);
         });
 
@@ -57,20 +61,16 @@ public static class DependencyInjectionRegister
 
         services.Configure<QueueSettings>(configuration.GetSection("QueueSettings"));
 
-        // TODO: Consume InventoryReserved
+        // TODO: Should have a private queue for order fulfillment events
         // TODO: Publish ReadyForPicking
 
-        // services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
-        // {
-        //     return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
-        // });
-        // services.AddMessaging<OrderStockFailedEvent, OrderStockFailedEventProcessor>(sp =>
-        // {
-        //     return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderStockFailed ?? string.Empty;
-        // });
+        services.AddMessaging<InventoryReserved, InventoryReservedEventProcessor>(sp =>
+        {
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
+        });
 
         services.AddScoped<PublishDomainEventsInterceptor>();
-        // services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IFulfillmentRepository, FulfillmentRepository>();
         // services.AddScoped<ICatalogService, CatalogService>();
         // services.AddScoped<ICustomerService, CustomerService>();
 

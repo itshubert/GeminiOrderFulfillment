@@ -3,6 +3,7 @@ using System;
 using GeminiOrderFulfillment.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GeminiOrderFulfillment.Infrastructure.Migrations
 {
     [DbContext(typeof(GeminiOrderFulfillmentDbContext))]
-    partial class GeminiOrderFulfillmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251008062104_Fullment_OrderId_Indexed_Unique")]
+    partial class Fullment_OrderId_Indexed_Unique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
