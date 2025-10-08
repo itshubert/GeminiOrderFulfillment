@@ -1,3 +1,4 @@
+using GeminiOrderFulfillment.Domain.FulfillmentAggregate;
 using GeminiOrderFulfillment.Infrastructure.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,8 @@ public sealed class GeminiOrderFulfillmentDbContext : DbContext
     {
         _publishDomainEventsInterceptor = publishDomainEventsInterceptor;
     }
+
+    public DbSet<Fullfillment> Fulfillments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

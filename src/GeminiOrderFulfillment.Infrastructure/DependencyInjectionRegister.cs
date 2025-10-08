@@ -56,6 +56,10 @@ public static class DependencyInjectionRegister
         services.AddScoped<IEventBridgePublisher, EventBridgePublisher>();
 
         services.Configure<QueueSettings>(configuration.GetSection("QueueSettings"));
+
+        // TODO: Consume InventoryReserved
+        // TODO: Publish ReadyForPicking
+
         // services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
         // {
         //     return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
