@@ -61,8 +61,6 @@ public static class DependencyInjectionRegister
 
         services.Configure<QueueSettings>(configuration.GetSection("QueueSettings"));
 
-        // TODO: Publish FulfillmentTaskCreated - Warehouse queue
-
         services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
         {
             return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
