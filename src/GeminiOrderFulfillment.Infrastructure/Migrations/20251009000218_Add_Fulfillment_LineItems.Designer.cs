@@ -3,6 +3,7 @@ using System;
 using GeminiOrderFulfillment.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GeminiOrderFulfillment.Infrastructure.Migrations
 {
     [DbContext(typeof(GeminiOrderFulfillmentDbContext))]
-    partial class GeminiOrderFulfillmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251009000218_Add_Fulfillment_LineItems")]
+    partial class Add_Fulfillment_LineItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

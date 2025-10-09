@@ -3,6 +3,7 @@ using System;
 using GeminiOrderFulfillment.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GeminiOrderFulfillment.Infrastructure.Migrations
 {
     [DbContext(typeof(GeminiOrderFulfillmentDbContext))]
-    partial class GeminiOrderFulfillmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251008235253_EnrichFulfillment")]
+    partial class EnrichFulfillment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace GeminiOrderFulfillment.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Entities.LineItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("FulfillmentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FulfillmentId");
-
-                    b.ToTable("LineItems", (string)null);
-                });
 
             modelBuilder.Entity("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Fullfillment", b =>
                 {
@@ -80,15 +57,6 @@ namespace GeminiOrderFulfillment.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Fulfillment_Status", "\"Status\" IN ('AWAITING_FULFILLMENT', 'TASK_CREATED', 'PICKING_IN_PROGRESS', 'PACKED', 'LABEL_GENERATED', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED')");
                         });
-                });
-
-            modelBuilder.Entity("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Entities.LineItem", b =>
-                {
-                    b.HasOne("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Fullfillment", null)
-                        .WithMany("LineItems")
-                        .HasForeignKey("FulfillmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Fullfillment", b =>
@@ -156,11 +124,6 @@ namespace GeminiOrderFulfillment.Infrastructure.Migrations
 
                     b.Navigation("ShippingAddress")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GeminiOrderFulfillment.Domain.FulfillmentAggregate.Fullfillment", b =>
-                {
-                    b.Navigation("LineItems");
                 });
 #pragma warning restore 612, 618
         }

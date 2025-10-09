@@ -1,8 +1,20 @@
 namespace GeminiOrderFulfillment.Infrastructure.Messaging.Events;
 
-public sealed record InventoryReserved(
+public sealed record InventoryReservedEvent(
     Guid OrderId,
+    ShippingAddress ShippingAddress,
     IEnumerable<InventoryReservedItem> Items);
+
+public sealed record ShippingAddress(
+    string FirstName,
+    string LastName,
+    string AddressLine1,
+    string AddressLine2,
+    string City,
+    string State,
+    string PostCode,
+    string Country
+);
 
 public sealed record InventoryReservedItem(
     Guid ProductId,

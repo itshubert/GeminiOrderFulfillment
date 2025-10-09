@@ -8,7 +8,7 @@ namespace GeminiOrderFulfillment.Application.Fulfillments.Commands;
 
 public sealed record UpdateFulfillmentStatusCommand(
     Guid OrderId,
-    FulfillmentStatus NewStatus) : IRequest<ErrorOr<Success>>;
+    Application.Common.Models.Fulfillments.FulfillmentStatus NewStatus) : IRequest<ErrorOr<Success>>;
 
 public sealed class UpdateFulfillmentStatusCommandHandler(IFulfillmentRepository _fulfillmentRepository)
     : IRequestHandler<UpdateFulfillmentStatusCommand, ErrorOr<Success>>
@@ -22,7 +22,7 @@ public sealed class UpdateFulfillmentStatusCommandHandler(IFulfillmentRepository
             return Errors.Fulfillment.InvalidOrderId(request.OrderId);
         }
 
-        fulfillment.UpdateStatus(request.NewStatus);
+        fulfillment.UpdateStatus((FulfillmentStatus)request.NewStatus);
 
         await _fulfillmentRepository.SaveChangesAsync(cancellationToken);
 

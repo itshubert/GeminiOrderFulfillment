@@ -3,7 +3,7 @@ namespace GeminiOrderFulfillment.Application.Common.Messaging;
 public interface IEventBridgePublisher
 {
     Task PublishAsync<T>(
-        string detailType,
+        DetailTypes detailType,
         T eventDetail,
         CancellationToken cancellationToken = default) where T : class;
 }

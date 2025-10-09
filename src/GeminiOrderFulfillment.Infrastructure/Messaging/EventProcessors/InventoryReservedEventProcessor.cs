@@ -1,13 +1,13 @@
 using GeminiOrderFulfillment.Application.Common.Messaging;
+using GeminiOrderFulfillment.Application.Common.Models.Fulfillments;
 using GeminiOrderFulfillment.Application.Fulfillments.Commands;
-using GeminiOrderFulfillment.Domain.FulfillmentAggregate;
 using GeminiOrderFulfillment.Infrastructure.Messaging.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace GeminiOrderFulfillment.Infrastructure.Messaging.EventProcessors;
 
-public sealed class InventoryReservedEventProcessor : IEventProcessor<InventoryReserved>
+public sealed class InventoryReservedEventProcessor : IEventProcessor<InventoryReservedEvent>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<InventoryReservedEventProcessor> _logger;
@@ -18,11 +18,14 @@ public sealed class InventoryReservedEventProcessor : IEventProcessor<InventoryR
         _logger = logger;
     }
 
-    public async Task ProcessEventAsync(InventoryReserved @event, CancellationToken cancellationToken)
+    public async Task<bool> ProcessEventAsync(InventoryReservedEvent @event, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Processing InventoryReservedEvent: {EventId}", @event.OrderId);
 
-        var result = await _mediator.Send(new CreateFulfillmentForOrderCommand(@event.OrderId), cancellationToken);
+        var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
+            @event.OrderId,
+            FulfillmentStatus.TASK_CREATED
+        ));
 
         if (result.IsError)
         {
@@ -30,10 +33,12 @@ public sealed class InventoryReservedEventProcessor : IEventProcessor<InventoryR
             {
                 _logger.LogError("Error updating order status for OrderId {OrderId}: {Error}", @event.OrderId, error);
             }
+
+            return false;
         }
-        else
-        {
-            _logger.LogInformation("Successfully updated order status for OrderId {OrderId}", @event.OrderId);
-        }
+
+        _logger.LogInformation("Successfully updated order status for OrderId {OrderId}", @event.OrderId);
+
+        return true;
     }
 }

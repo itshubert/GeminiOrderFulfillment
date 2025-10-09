@@ -13,10 +13,10 @@ using GeminiOrderFulfillment.Infrastructure.Messaging;
 using GeminiOrderFulfillment.Infrastructure.Interceptors;
 using GeminiOrderFulfillment.Infrastructure.Messaging.Models;
 using GeminiOrderFulfillment.Application.Common.Messaging;
-using GeminiOrderFulfillment.Infrastructure.Messaging.Events;
 using GeminiOrderFulfillment.Infrastructure.Messaging.EventProcessors;
 using GeminiOrderFulfillment.Application.Common.Interfaces;
 using GeminiOrderFulfillment.Infrastructure.Persistence.Repositories;
+using GeminiOrderFulfillment.Infrastructure.Messaging.Events;
 
 namespace GeminiOrderFulfillment.Infrastructure;
 
@@ -61,12 +61,16 @@ public static class DependencyInjectionRegister
 
         services.Configure<QueueSettings>(configuration.GetSection("QueueSettings"));
 
-        // TODO: Should have a private queue for order fulfillment events
-        // TODO: Publish ReadyForPicking
+        // TODO: Publish FulfillmentTaskCreated - Warehouse queue
 
-        services.AddMessaging<InventoryReserved, InventoryReservedEventProcessor>(sp =>
+        services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
         {
             return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
+        });
+
+        services.AddMessaging<OrderSubmittedEvent, OrderSubmittedEventProcessor>(sp =>
+        {
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderSubmitted ?? string.Empty;
         });
 
         services.AddScoped<PublishDomainEventsInterceptor>();

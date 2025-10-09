@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GeminiOrderFulfillment.Infrastructure.Persistence.Configurations;
 
-public sealed class FulfillmentConfiguration : IEntityTypeConfiguration<Fullfillment>
+public sealed class FulfillmentConfiguration : IEntityTypeConfiguration<Fulfillment>
 {
-    public void Configure(EntityTypeBuilder<Fullfillment> builder)
+    public void Configure(EntityTypeBuilder<Fulfillment> builder)
     {
         builder.ToTable("Fulfillments");
 
@@ -40,5 +40,55 @@ public sealed class FulfillmentConfiguration : IEntityTypeConfiguration<Fullfill
             .IsRequired();
 
         builder.Property(f => f.UpdatedAt);
+
+        builder.OwnsOne(o => o.ShippingAddress, sa =>
+        {
+            sa.Property(a => a.FirstName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("FirstName");
+            sa.Property(a => a.LastName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("LastName");
+            sa.Property(a => a.AddressLine1)
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnName("AddressLine1");
+
+            sa.Property(a => a.AddressLine2)
+                .HasMaxLength(200)
+                .HasColumnName("AddressLine2");
+
+            sa.Property(a => a.City)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("City");
+
+            sa.Property(a => a.State)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("State");
+
+            sa.Property(a => a.PostCode)
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasColumnName("PostCode");
+
+            sa.Property(a => a.Country)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("Country");
+        });
+
+        builder.HasMany(l => l.LineItems)
+            .WithOne()
+            .HasForeignKey("FulfillmentId")
+            .HasPrincipalKey(f => f.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(f => f.LineItems)
+            .HasField("_lineItems")
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

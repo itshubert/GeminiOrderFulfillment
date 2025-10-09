@@ -16,7 +16,7 @@ public sealed class GeminiOrderFulfillmentDbContext : DbContext
         _publishDomainEventsInterceptor = publishDomainEventsInterceptor;
     }
 
-    public DbSet<Fullfillment> Fulfillments { get; set; }
+    public DbSet<Fulfillment> Fulfillments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
