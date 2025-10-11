@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;
-using Polly.Timeout;
 
 namespace GeminiOrderFulfillment.Infrastructure.Messaging;
 

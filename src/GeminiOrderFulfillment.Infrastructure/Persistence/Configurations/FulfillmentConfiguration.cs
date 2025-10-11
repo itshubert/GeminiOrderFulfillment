@@ -31,7 +31,7 @@ public sealed class FulfillmentConfiguration : IEntityTypeConfiguration<Fulfillm
 
         builder.ToTable(t => t.HasCheckConstraint(
             "CK_Fulfillment_Status",
-            "\"Status\" IN ('AWAITING_FULFILLMENT', 'TASK_CREATED', 'PICKING_IN_PROGRESS', 'PACKED', 'LABEL_GENERATED', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED')"));
+        "\"Status\" IN ('AWAITING_FULFILLMENT', 'TASK_CREATED', 'PICKING_IN_PROGRESS', 'PACKED', 'LABEL_GENERATED', 'ORDER_SHIPPED', 'IN_TRANSIT', 'DELIVERED')"));
 
         builder.Property(f => f.TrackingNumber)
             .HasMaxLength(100);

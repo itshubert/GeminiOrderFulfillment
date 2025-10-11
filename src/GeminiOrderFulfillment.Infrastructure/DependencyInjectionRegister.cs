@@ -56,11 +56,24 @@ public static class DependencyInjectionRegister
         });
 
         services.AddGeminiServices(configuration);
+
         ConfigureEventBridge(services, configuration);
         services.AddScoped<IEventBridgePublisher, EventBridgePublisher>();
 
+        // SQS message processors
         services.Configure<QueueSettings>(configuration.GetSection("QueueSettings"));
+        services.AddSqsMessageProcessors();
 
+        services.AddScoped<PublishDomainEventsInterceptor>();
+        services.AddScoped<IFulfillmentRepository, FulfillmentRepository>();
+        // services.AddScoped<ICatalogService, CatalogService>();
+        // services.AddScoped<ICustomerService, CustomerService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSqsMessageProcessors(this IServiceCollection services)
+    {
         services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
         {
             return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
@@ -71,10 +84,20 @@ public static class DependencyInjectionRegister
             return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderSubmitted ?? string.Empty;
         });
 
-        services.AddScoped<PublishDomainEventsInterceptor>();
-        services.AddScoped<IFulfillmentRepository, FulfillmentRepository>();
-        // services.AddScoped<ICatalogService, CatalogService>();
-        // services.AddScoped<ICustomerService, CustomerService>();
+        services.AddMessaging<JobInProgressEvent, JobInProgressEventProcessor>(sp =>
+        {
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobInProgress ?? string.Empty;
+        });
+
+        services.AddMessaging<JobCompletedEvent, JobCompletedEventProcessor>(sp =>
+        {
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobCompleted ?? string.Empty;
+        });
+
+        services.AddMessaging<ShippingLabelGeneratedEvent, ShippingLabelGeneratedEventProcessor>(sp =>
+        {
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.ShippingLabelGenerated ?? string.Empty;
+        });
 
         return services;
     }

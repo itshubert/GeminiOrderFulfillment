@@ -7,7 +7,7 @@ public enum FulfillmentStatus
     PICKING_IN_PROGRESS,
     PACKED,
     LABEL_GENERATED,
-    SHIPPED,
+    ORDER_SHIPPED,
     IN_TRANSIT,
     DELIVERED
 }

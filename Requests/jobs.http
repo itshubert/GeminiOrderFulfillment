@@ -1,0 +1,7 @@
+@HostAddress=http://localhost:4009
+
+POST {{HostAddress}}/jobs/95463e00-8b2b-47bf-8554-78c54e579168/status-update/completed
+
+###
+
+POST {{HostAddress}}/jobs/d1b45494-615c-4c3c-aca1-b1ea3f8d4c5d/status-update/inprogress
