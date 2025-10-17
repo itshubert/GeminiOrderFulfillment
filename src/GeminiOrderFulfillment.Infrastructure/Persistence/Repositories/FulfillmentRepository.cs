@@ -26,6 +26,13 @@ public sealed class FulfillmentRepository : BaseRepository, IFulfillmentReposito
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<Fulfillment>> GetByStatusAsync(FulfillmentStatus status, CancellationToken cancellationToken)
+    {
+        return await _context.Fulfillments
+            .Where(f => f.Status == status)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(Fulfillment fulfillment, CancellationToken cancellationToken)
     {
         await _context.Fulfillments.AddAsync(fulfillment, cancellationToken);

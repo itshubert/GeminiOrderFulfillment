@@ -1,0 +1,5 @@
+@HostAddress=http://localhost:4008
+
+POST {{HostAddress}}/fulfillments/publish-by-status/label_generated
+Content-Type: application/json
+

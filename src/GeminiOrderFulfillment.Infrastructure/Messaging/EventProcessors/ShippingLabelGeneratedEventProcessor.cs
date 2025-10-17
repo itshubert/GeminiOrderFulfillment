@@ -29,7 +29,7 @@ public sealed class ShippingLabelGeneratedEventProcessor : IEventProcessor<Shipp
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
-            FulfillmentStatus.ORDER_SHIPPED
+            FulfillmentStatus.LABEL_GENERATED
         ));
 
         if (result.IsError)
@@ -42,7 +42,7 @@ public sealed class ShippingLabelGeneratedEventProcessor : IEventProcessor<Shipp
             return false;
         }
 
-        await _eventBridgePublisher.PublishAsync(DetailTypes.OrderShipped, new
+        await _eventBridgePublisher.PublishAsync(DetailTypes.OrderReadyForShipment, new
         {
             @event.OrderId,
             @event.TrackingNumber

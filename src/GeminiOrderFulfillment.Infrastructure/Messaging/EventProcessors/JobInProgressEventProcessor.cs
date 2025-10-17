@@ -9,11 +9,16 @@ namespace GeminiOrderFulfillment.Infrastructure.Messaging.EventProcessors;
 public sealed class JobInProgressEventProcessor : IEventProcessor<JobInProgressEvent>
 {
     private readonly IMediator _mediator;
+    private readonly IEventBridgePublisher _eventBridgePublisher;
     private readonly ILogger<JobInProgressEventProcessor> _logger;
 
-    public JobInProgressEventProcessor(IMediator mediator, ILogger<JobInProgressEventProcessor> logger)
+    public JobInProgressEventProcessor(
+        IMediator mediator,
+        IEventBridgePublisher eventBridgePublisher,
+        ILogger<JobInProgressEventProcessor> logger)
     {
         _mediator = mediator;
+        _eventBridgePublisher = eventBridgePublisher;
         _logger = logger;
     }
 
@@ -35,6 +40,8 @@ public sealed class JobInProgressEventProcessor : IEventProcessor<JobInProgressE
 
             return false;
         }
+
+        await _eventBridgePublisher.PublishAsync(DetailTypes.OrderInProgress, @event, cancellationToken);
 
         _logger.LogInformation("Job {JobId} for Order {OrderId} is in progress.", @event.JobId, @event.OrderId);
 

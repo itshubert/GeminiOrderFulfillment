@@ -17,5 +17,9 @@ public static partial class Errors
         public static Error FulfillmentAlreadyExists(Guid orderId) => Error.Conflict(
             code: "Fulfillment.AlreadyExists",
             description: $"A fulfillment for Order ID '{orderId}' already exists.");
+
+        public static Error InvalidFulfillmentStatus(string status) => Error.Validation(
+            code: "Fulfillment.InvalidStatus",
+            description: $"The fulfillment status '{status}' is invalid.");
     }
 }

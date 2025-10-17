@@ -23,5 +23,7 @@ public sealed class FulfillmentMappingConfig : IRegister
         config.NewConfig<Domain.FulfillmentAggregate.ValueObjects.ShippingAddress, ShippingAddressIntegrationModel>()
             .Map(dest => dest, src => src);
 
+        config.NewConfig<Application.Common.Models.Fulfillments.FulfillmentStatus, Domain.FulfillmentAggregate.FulfillmentStatus>()
+            .MapWith(src => Enum.Parse<Domain.FulfillmentAggregate.FulfillmentStatus>(src.ToString()));
     }
 }

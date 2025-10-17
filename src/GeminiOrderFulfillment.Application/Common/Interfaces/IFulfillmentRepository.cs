@@ -7,5 +7,6 @@ public interface IFulfillmentRepository : IRepository
 {
     Task<Fulfillment?> GetByIdAsync(FulfillmentId id, CancellationToken cancellationToken);
     Task<Fulfillment?> GetByOrderForUpdateAsync(Guid orderId, CancellationToken cancellationToken);
+    Task<IEnumerable<Fulfillment>> GetByStatusAsync(FulfillmentStatus status, CancellationToken cancellationToken);
     Task AddAsync(Fulfillment fulfillment, CancellationToken cancellationToken);
 }
