@@ -49,7 +49,7 @@ public sealed class PublishFulfillmentsByStatusCommandHandler : IRequestHandler<
                 _ => throw new InvalidOperationException($"No detail type mapping for fulfillment status: {request.Status}")
             };
 
-            await _eventBridgePublisher.PublishAsync(detailType, fulfillmentModel, cancellationToken);
+            await _eventBridgePublisher.PublishAsync(detailType, new { fulfillment.OrderId, fulfillment.TrackingNumber }, cancellationToken);
         }
 
         return Result.Success;

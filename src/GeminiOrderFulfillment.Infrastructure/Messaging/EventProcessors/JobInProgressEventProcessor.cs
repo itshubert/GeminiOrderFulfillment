@@ -28,7 +28,9 @@ public sealed class JobInProgressEventProcessor : IEventProcessor<JobInProgressE
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
-            Application.Common.Models.Fulfillments.FulfillmentStatus.PICKING_IN_PROGRESS
+            Application.Common.Models.Fulfillments.FulfillmentStatus.PICKING_IN_PROGRESS,
+
+        null
         ));
 
         if (result.IsError)

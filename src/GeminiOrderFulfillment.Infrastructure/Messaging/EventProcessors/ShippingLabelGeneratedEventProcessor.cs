@@ -29,7 +29,8 @@ public sealed class ShippingLabelGeneratedEventProcessor : IEventProcessor<Shipp
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
-            FulfillmentStatus.LABEL_GENERATED
+            FulfillmentStatus.LABEL_GENERATED,
+            @event.TrackingNumber
         ));
 
         if (result.IsError)

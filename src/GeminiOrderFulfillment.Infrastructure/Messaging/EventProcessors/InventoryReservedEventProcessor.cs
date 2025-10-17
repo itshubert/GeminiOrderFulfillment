@@ -24,7 +24,9 @@ public sealed class InventoryReservedEventProcessor : IEventProcessor<InventoryR
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
-            FulfillmentStatus.TASK_CREATED
+            FulfillmentStatus.TASK_CREATED,
+
+            null
         ));
 
         if (result.IsError)

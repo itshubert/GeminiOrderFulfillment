@@ -8,4 +8,5 @@ public sealed class QueueSettings
     public string JobInProgress { get; set; } = string.Empty;
     public string JobCompleted { get; set; } = string.Empty;
     public string ShippingLabelGenerated { get; set; } = string.Empty;
+    public string OrderDelivered { get; set; } = string.Empty;
 }

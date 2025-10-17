@@ -8,5 +8,3 @@ public enum DetailTypes
     OrderReadyForShipment,
     OrderShipped
 }
-
-// TODO: Publish OrderShipped when Carrier publishes shipment event

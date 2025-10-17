@@ -28,7 +28,8 @@ public sealed class JobCompletedEventProcessor : IEventProcessor<JobCompletedEve
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
-            Application.Common.Models.Fulfillments.FulfillmentStatus.PACKED
+            Application.Common.Models.Fulfillments.FulfillmentStatus.PACKED,
+            null
         ));
 
         if (result.IsError)

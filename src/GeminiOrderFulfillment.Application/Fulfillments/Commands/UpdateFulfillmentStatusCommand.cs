@@ -8,7 +8,8 @@ namespace GeminiOrderFulfillment.Application.Fulfillments.Commands;
 
 public sealed record UpdateFulfillmentStatusCommand(
     Guid OrderId,
-    Application.Common.Models.Fulfillments.FulfillmentStatus NewStatus) : IRequest<ErrorOr<Success>>;
+    Application.Common.Models.Fulfillments.FulfillmentStatus NewStatus,
+    string? TrackingNumber) : IRequest<ErrorOr<Success>>;
 
 public sealed class UpdateFulfillmentStatusCommandHandler(IFulfillmentRepository _fulfillmentRepository)
     : IRequestHandler<UpdateFulfillmentStatusCommand, ErrorOr<Success>>
@@ -23,6 +24,11 @@ public sealed class UpdateFulfillmentStatusCommandHandler(IFulfillmentRepository
         }
 
         fulfillment.UpdateStatus((FulfillmentStatus)request.NewStatus);
+
+        if (!string.IsNullOrEmpty(request.TrackingNumber))
+        {
+            fulfillment.UpdateTrackingNumber(request.TrackingNumber);
+        }
 
         await _fulfillmentRepository.SaveChangesAsync(cancellationToken);
 
