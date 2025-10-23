@@ -72,12 +72,17 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler("/fulfillment/error");
 app.UseCors("AllowAll");
 // app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Health check endpoint for ECS
+app.MapGet("/fulfillment/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }))
+    .WithName("HealthCheck")
+    .WithTags("Health");
 
 app.Run();

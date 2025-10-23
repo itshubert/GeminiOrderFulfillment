@@ -24,7 +24,7 @@ public sealed class JobCompletedEventProcessor : IEventProcessor<JobCompletedEve
 
     public async Task<bool> ProcessEventAsync(JobCompletedEvent @event, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Processing JobCompletedEvent: {EventId}", @event.JobId);
+        _logger.LogInformation("Processing JobCompletedEvent: {@evt}", @event);
 
         var result = await _mediator.Send(new UpdateFulfillmentStatusCommand(
             @event.OrderId,
@@ -47,7 +47,7 @@ public sealed class JobCompletedEventProcessor : IEventProcessor<JobCompletedEve
             @event.OrderId
         }, cancellationToken);
 
-        _logger.LogInformation("Job {JobId} for Order {OrderId} completed at {CompletedAt}.", @event.JobId, @event.OrderId, @event.CompletedAt);
+        _logger.LogInformation("Successfully published event to EventBridge: {@detailType} with OrderID {@orderId}", DetailTypes.ShippingJobCreated, @event.OrderId);
 
         return true;
 

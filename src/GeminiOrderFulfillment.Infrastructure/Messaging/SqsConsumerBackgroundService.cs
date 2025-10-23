@@ -102,6 +102,7 @@ public sealed class SqsConsumerBackgroundService<TEvent, TProcessor> : Backgroun
                     // if (envelope is not null && envelope.Detail is not null)
                     if (obj is not null)
                     {
+                        _logger.LogInformation("Received event from SQS: {@message}", message);
                         var success = await processor.ProcessEventAsync(obj, stoppingToken);
 
                         // Delete the message from the queue after successful processing
