@@ -20,7 +20,7 @@ public sealed class OrderSubmittedEventProcessor : IEventProcessor<OrderSubmitte
 
     public async Task<bool> ProcessEventAsync(OrderSubmittedEvent @event, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Processing OrderSubmittedEvent: {EventId}", @event.Id);
+        _logger.LogInformation("Processing OrderSubmittedEvent for Order {OrderId}", @event.Id);
 
         var command = new CreateFulfillmentForOrderCommand(
             @event.Id,

@@ -4,6 +4,7 @@ using GeminiOrderFulfillment.Application.Common.Models.Fulfillments;
 using GeminiOrderFulfillment.Domain.Common.Errors;
 using GeminiOrderFulfillment.Domain.FulfillmentAggregate;
 using GeminiOrderFulfillment.Domain.FulfillmentAggregate.Entities;
+using GeminiOrderFulfillment.Domain.FulfillmentAggregate.ValueObjects;
 using MapsterMapper;
 using MediatR;
 
@@ -39,12 +40,28 @@ public sealed class CreateFulfillmentForOrderCommandHandler : IRequestHandler<Cr
             return Errors.Fulfillment.FulfillmentAlreadyExists(request.OrderId);
         }
 
-        var fulfillment = Fulfillment.Create(
-            null,
+        var fulfillmentId = FulfillmentId.CreateUnique();
+
+        List<LineItem> lineItems = new();
+
+        foreach (var item in request.LineItems)
+        {
+            var lineItem = LineItem.Create(
+                null,
+                fulfillmentId,
+                item.ProductId,
+                item.ProductName,
+                item.Quantity);
+
+            lineItems.Add(lineItem);
+        }
+
+        var fulfillment = Fulfillment.CreateWithItems(
+            fulfillmentId.Value,
             request.OrderId,
             (Domain.FulfillmentAggregate.FulfillmentStatus)Common.Models.Fulfillments.FulfillmentStatus.AWAITING_FULFILLMENT,
             null,
-            Domain.FulfillmentAggregate.ValueObjects.ShippingAddress.Create(
+            ShippingAddress.Create(
                 request.ShippingAddress.FirstName,
                 request.ShippingAddress.LastName,
                 request.ShippingAddress.AddressLine1,
@@ -54,21 +71,16 @@ public sealed class CreateFulfillmentForOrderCommandHandler : IRequestHandler<Cr
                 request.ShippingAddress.PostCode,
                 request.ShippingAddress.Country),
             DateTimeOffset.UtcNow,
-            null);
+            null,
+            lineItems);
 
-        foreach (var item in request.LineItems)
-        {
-            var lineItem = LineItem.Create(
-                null,
-                fulfillment.Id,
-                item.ProductId,
-                item.ProductName,
-                item.Quantity);
 
-            fulfillment.AddLineItem(lineItem);
-        }
 
         await _fulfillmentRepository.AddAsync(fulfillment, cancellationToken);
+
+        fulfillment.UpdateStatus(Domain.FulfillmentAggregate.FulfillmentStatus.TASK_CREATED);
+
+        await _fulfillmentRepository.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<FulfillmentModel>(fulfillment);
     }

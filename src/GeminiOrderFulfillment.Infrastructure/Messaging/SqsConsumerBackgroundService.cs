@@ -53,7 +53,8 @@ public sealed class SqsConsumerBackgroundService<TEvent, TProcessor> : Backgroun
                 {
                     QueueUrl = _queueUrl,
                     MaxNumberOfMessages = 10,
-                    WaitTimeSeconds = 20
+                    WaitTimeSeconds = 20,
+                    VisibilityTimeout = 300
                 }, stoppingToken);
 
                 if (messages.Messages is null)
@@ -67,6 +68,10 @@ public sealed class SqsConsumerBackgroundService<TEvent, TProcessor> : Backgroun
                     await writer.WriteAsync(message, stoppingToken);
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error polling messages from SQS: {QueueUrl}", _queueUrl);
         }
         finally
         {

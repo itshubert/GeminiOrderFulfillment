@@ -78,34 +78,29 @@ public static class DependencyInjectionRegister
 
     private static IServiceCollection AddSqsMessageProcessors(this IServiceCollection services)
     {
-        services.AddMessaging<InventoryReservedEvent, InventoryReservedEventProcessor>(sp =>
-        {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.InventoryReserved ?? string.Empty;
-        });
-
         services.AddMessaging<OrderSubmittedEvent, OrderSubmittedEventProcessor>(sp =>
         {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderSubmitted ?? string.Empty;
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderSubmitted ?? throw new InvalidOperationException("Queue URL for OrderSubmitted is not configured.");
         });
 
         services.AddMessaging<JobInProgressEvent, JobInProgressEventProcessor>(sp =>
         {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobInProgress ?? string.Empty;
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobInProgress ?? throw new InvalidOperationException("Queue URL for JobInProgress is not configured.");
         });
 
         services.AddMessaging<JobCompletedEvent, JobCompletedEventProcessor>(sp =>
         {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobCompleted ?? string.Empty;
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.JobCompleted ?? throw new InvalidOperationException("Queue URL for JobCompleted is not configured.");
         });
 
         services.AddMessaging<ShippingLabelGeneratedEvent, ShippingLabelGeneratedEventProcessor>(sp =>
         {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.ShippingLabelGenerated ?? string.Empty;
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.ShippingLabelGenerated ?? throw new InvalidOperationException("Queue URL for ShippingLabelGenerated is not configured.");
         });
 
         services.AddMessaging<OrderDeliveredEvent, OrderDeliveredEventProcessor>(sp =>
         {
-            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderDelivered ?? string.Empty;
+            return sp.GetRequiredService<IOptions<QueueSettings>>().Value.OrderDelivered ?? throw new InvalidOperationException("Queue URL for OrderDelivered is not configured.");
         });
 
         return services;
